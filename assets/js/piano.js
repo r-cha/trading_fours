@@ -2,7 +2,6 @@ class PianoRoll {
     constructor() {
         this.pianoRoll = document.getElementById("pianoRoll");
         this.pianoKeys = document.getElementById("pianoKeys");
-        console.log(this.pianoRoll, this.pianoKeys);
         this.rollCtx = this.pianoRoll.getContext("2d");
         this.keysCtx = this.pianoKeys.getContext("2d");
 
@@ -17,7 +16,18 @@ class PianoRoll {
         this.isRecording = false;
         this.recordingStartTime = null;
         this.recordedNotes = [];
-        this.timeScale = 1; // Pixels per millisecond
+        this.timeScale = 1;
+
+        this.keyboardMap = {
+            // Lower octave
+            'a': 'C4', 's': 'D4', 'd': 'E4', 'f': 'F4', 
+            'g': 'G4', 'h': 'A4', 'j': 'B4',
+            'w': 'C#4', 'e': 'D#4', 't': 'F#4', 
+            'y': 'G#4', 'u': 'A#4',
+            // Upper octave
+            'k': 'C5', 'l': 'D5', ';': 'E5', "'": 'F5',
+            'o': 'C#5', 'p': 'D#5'
+        };
 
         this.setupCanvas();
         this.setupEventListeners();
@@ -85,6 +95,23 @@ class PianoRoll {
             this.isRecording = false;
             this.recordingStartTime = null;
             this.render();
+        });
+
+        document.addEventListener("keydown", (e) => {
+            if (e.repeat) return; // Prevent key repeat
+            const note = this.keyboardMap[e.key.toLowerCase()];
+            if (note && !this.pressedKeys.has(note)) {
+                this.playNote(note);
+            }
+        });
+
+        document.addEventListener("keyup", (e) => {
+            const note = this.keyboardMap[e.key.toLowerCase()];
+            if (note) {
+                this.pressedKeys.delete(note);
+                this.synth.triggerRelease(note);
+                this.render();
+            }
         });
     }
 
@@ -216,10 +243,15 @@ class PianoRoll {
         const ctx = this.keysCtx;
         ctx.clearRect(0, 0, this.pianoKeys.width, this.pianoKeys.height);
 
+        const getKeyForNote = (note) => {
+            return Object.entries(this.keyboardMap).find(([_, n]) => n === note)?.[0];
+        };
+
         // Draw white keys
         for (let octave = 0; octave < this.octaves; octave++) {
             for (let i = 0; i < 7; i++) {
                 const x = (octave * 7 + i) * this.whiteKeyWidth;
+                const note = `${["C", "D", "E", "F", "G", "A", "B"][i]}${octave + 4}`;
                 const isPressed = this.pressedKeys.has(
                     `${["C", "D", "E", "F", "G", "A", "B"][i]}${octave + 4}`,
                 );
@@ -238,6 +270,15 @@ class PianoRoll {
                     this.whiteKeyWidth - 1,
                     this.pianoKeys.height,
                 );
+
+                const keyLabel = getKeyForNote(note);
+                if (keyLabel) {
+                    ctx.fillStyle = "#000000";
+                    ctx.font = "12px Arial";
+                    ctx.fillText(keyLabel.toUpperCase(), 
+                        x + this.whiteKeyWidth/2 - 5, 
+                        this.pianoKeys.height - 15);
+                }
             }
         }
 
@@ -258,6 +299,15 @@ class PianoRoll {
                     this.blackKeyWidth,
                     this.pianoKeys.height * 0.6,
                 );
+
+                const keyLabel = getKeyForNote(note);
+                if (keyLabel) {
+                    ctx.fillStyle = "#ffffff";
+                    ctx.font = "10px Arial";
+                    ctx.fillText(keyLabel.toUpperCase(), 
+                        x + this.blackKeyWidth/2 - 4, 
+                        this.pianoKeys.height * 0.4);
+                }
             });
         }
     }
