@@ -20,7 +20,7 @@ defmodule TradingFoursWeb.Router do
 
     get "/", PageController, :home
 
-    live "/chat", ChatController
+    live "/chat/:room_id", ChatController
   end
 
   # Other scopes may use custom stacks.

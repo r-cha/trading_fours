@@ -1,8 +1,8 @@
 defmodule TradingFoursWeb.ChatController do
   use TradingFoursWeb, :live_view
   alias TradingFoursWeb.Presence
-  @topic "chat"
-  @presence_topic "chat:presence"
+  def topic(room_id), do: "chat:#{room_id}"
+  def presence_topic(room_id), do: "chat:#{room_id}:presence"
   @colors ["#FF6B6B", "#4ECDC4", "#45B7D1", "#96CEB4", "#FFEEAD", "#D4A5A5", "#9B59B6", "#3498DB", "#F1C40F", "#E74C3C"]
 
   def render(assigns) do
@@ -71,13 +71,19 @@ defmodule TradingFoursWeb.ChatController do
     """
   end
 
-  def mount(_params, _session, socket) do
+  def mount(%{"room_id" => room_id}, _session, socket) do
     if connected?(socket) do
-      Phoenix.PubSub.subscribe(TradingFours.PubSub, @topic)
-      Phoenix.PubSub.subscribe(TradingFours.PubSub, @presence_topic)
+      Phoenix.PubSub.subscribe(TradingFours.PubSub, topic(room_id))
+      Phoenix.PubSub.subscribe(TradingFours.PubSub, presence_topic(room_id))
     end
     
-    {:ok, assign(socket, messages: [], username: nil, user_color: nil, online_users: %{})}
+    {:ok, assign(socket, 
+      room_id: room_id,
+      messages: [], 
+      username: nil, 
+      user_color: nil, 
+      online_users: %{}
+    )}
   end
 
   def handle_event("set_username", %{"username" => username}, socket) do
@@ -85,7 +91,7 @@ defmodule TradingFoursWeb.ChatController do
     
     {:ok, _} = Presence.track(
       self(),
-      @presence_topic,
+      presence_topic(socket.assigns.room_id),
       username,
       %{
         color: color,
@@ -98,7 +104,7 @@ defmodule TradingFoursWeb.ChatController do
 
   def handle_event("send_message", %{"message" => message}, socket) do
     message_item = %{author: socket.assigns.username, content: message, color: socket.assigns.user_color}
-    Phoenix.PubSub.broadcast(TradingFours.PubSub, @topic, {:new_message, message_item})
+    Phoenix.PubSub.broadcast(TradingFours.PubSub, topic(socket.assigns.room_id), {:new_message, message_item})
     {:noreply, socket}
   end
 
@@ -108,7 +114,7 @@ defmodule TradingFoursWeb.ChatController do
   end
 
   def handle_info(%{event: "presence_diff", payload: diff}, socket) do
-    online_users = Presence.list(@presence_topic)
+    online_users = Presence.list(presence_topic(socket.assigns.room_id))
     |> Enum.map(fn {username, %{metas: [meta | _]}} -> 
       {username, meta}
     end)
