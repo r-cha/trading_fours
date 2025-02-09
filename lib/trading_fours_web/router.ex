@@ -1,5 +1,6 @@
 defmodule TradingFoursWeb.Router do
   use TradingFoursWeb, :router
+  import Phoenix.LiveView.Router
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -8,7 +9,6 @@ defmodule TradingFoursWeb.Router do
     plug :put_root_layout, html: {TradingFoursWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug TradingFoursWeb.Plugs.Locale, "en"
   end
 
   pipeline :api do
@@ -19,8 +19,8 @@ defmodule TradingFoursWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
-    get "/hello", HelloController, :index
-    get "/hello/:messenger", HelloController, :show
+
+    live "/chat", ChatController
   end
 
   # Other scopes may use custom stacks.

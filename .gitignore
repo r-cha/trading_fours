@@ -35,3 +35,4 @@ trading_fours-*.tar
 npm-debug.log
 /assets/node_modules/
 
+.aider*
