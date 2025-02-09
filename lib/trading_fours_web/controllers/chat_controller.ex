@@ -7,7 +7,7 @@ defmodule TradingFoursWeb.ChatController do
 
   def render(assigns) do
     ~H"""
-    <div class="h-[calc(100vh-40px)] flex flex-col mt-10">
+    <div class="h-screen flex flex-col">
       <%= if @username do %>
         <div class="flex">
           <div class="flex-1">
