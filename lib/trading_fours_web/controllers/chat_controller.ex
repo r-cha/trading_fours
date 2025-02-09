@@ -53,6 +53,10 @@ defmodule TradingFoursWeb.ChatController do
           </div>
         </div>
 
+         <div class="piano-container">
+            <canvas id="pianoRoll" class="piano-roll"></canvas>
+            <canvas id="pianoKeys" class="piano-keys"></canvas>
+        </div>
         <div class="flex-none border-t border-gray-200 p-4 bg-white">
           <form phx-submit="send_message" id="chat-form" phx-hook="ChatForm" class="flex gap-2">
             <input type="text" name="message" placeholder="Type a message..." id="chat-input"
