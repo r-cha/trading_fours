@@ -6,6 +6,7 @@ defmodule TradingFoursWeb.ChatController do
     ~H"""
     <h1>Chat</h1>
     <%= if @username do %>
+      <p class="welcome">Welcome, <%= @username %>!</p>
       <form phx-submit="send_message">
         <input type="text" name="message" placeholder="Type a message...">
         <button type="submit">Send</button>
