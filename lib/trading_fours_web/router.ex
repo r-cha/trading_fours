@@ -20,7 +20,7 @@ defmodule TradingFoursWeb.Router do
 
     get "/", PageController, :home
     
-    get "/chat", ChatController, :redirect_to_room
+    get "/chat", ChatRedirectController, :redirect_to_room
     live "/chat/:room_id", ChatController
   end
 
