@@ -33,7 +33,7 @@ defmodule TradingFoursWeb.ChatController do
         </div>
 
         <div class="flex-1 overflow-y-auto mb-4">
-          <div class="flex flex-col-reverse p-4 space-y-reverse space-y-4">
+          <div class="flex flex-col p-4 space-y-4">
             <%= for msg <- @messages do %>
               <div class="message flex justify-start">
                 <div class="bg-gray-100 px-4 py-3 rounded-lg w-full">
@@ -96,7 +96,7 @@ defmodule TradingFoursWeb.ChatController do
     messages = Repo.all(
       from m in Message,
       where: m.room_id == ^room_id,
-      order_by: [desc: m.inserted_at],
+      order_by: [asc: m.inserted_at],
       limit: 100
     )
     
@@ -149,7 +149,7 @@ defmodule TradingFoursWeb.ChatController do
           inserted_at: message.inserted_at
         }
         Phoenix.PubSub.broadcast(TradingFours.PubSub, topic(socket.assigns.room_id), {:new_message, message_item})
-        {:noreply, assign(socket, :messages, [message_item | socket.assigns.messages])}
+        {:noreply, assign(socket, :messages, socket.assigns.messages ++ [message_item])}
       
       {:error, _changeset} ->
         {:noreply, socket}
@@ -157,7 +157,7 @@ defmodule TradingFoursWeb.ChatController do
   end
 
   def handle_info({:new_message, message_item}, socket) do
-    {:noreply, assign(socket, :messages, [message_item | socket.assigns.messages])}
+    {:noreply, assign(socket, :messages, socket.assigns.messages ++ [message_item])}
   end
 
 
