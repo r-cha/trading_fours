@@ -146,12 +146,11 @@ defmodule TradingFoursWeb.ChatController do
           color: message.color
         }
         Phoenix.PubSub.broadcast(TradingFours.PubSub, topic(socket.assigns.room_id), {:new_message, message_item})
-        {:noreply, update(socket, :messages, &[message_item | &1])}
+        {:noreply, Phoenix.Component.update(socket, :messages, &[message_item | &1])}
       
       {:error, _changeset} ->
         {:noreply, socket}
     end
-    {:noreply, socket}
   end
 
   def handle_info({:new_message, message_item}, socket) do
