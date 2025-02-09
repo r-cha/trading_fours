@@ -131,7 +131,8 @@ defmodule TradingFoursWeb.ChatController do
   end
 
   def handle_event("midi_sequence_ready", %{"sequence" => midi_sequence}, socket) do
-    if is_valid_midi_sequence?(midi_sequence) do
+    # Allow empty sequence for new room creation
+    if is_nil(midi_sequence) || is_valid_midi_sequence?(midi_sequence) do
       message_params = %{
         midi_sequence: midi_sequence,
         author: socket.assigns.username,
@@ -174,6 +175,7 @@ defmodule TradingFoursWeb.ChatController do
   end
 
   # Validate MIDI sequence format
+  defp is_valid_midi_sequence?(nil), do: true
   defp is_valid_midi_sequence?(sequence) when is_list(sequence) do
     Enum.all?(sequence, fn note ->
       is_map(note) and
