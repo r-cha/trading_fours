@@ -10,8 +10,6 @@ defmodule TradingFoursWeb.ChatController do
 
   def render(assigns) do
     ~H"""
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
-    <script src={~p"/assets/piano.js"}></script>
     <div class="h-[calc(100vh-64px)] flex flex-col">
       <%= if @username do %>
         <div class="flex-none">
@@ -62,6 +60,7 @@ defmodule TradingFoursWeb.ChatController do
             </div>
             <canvas id="pianoRoll" class="piano-roll"></canvas>
             <canvas id="pianoKeys" class="piano-keys"></canvas>
+        <script defer type="text/javascript" src={~p"/assets/piano.js"}></script>
         </div>
         <div class="flex-none border-t border-gray-200 p-4 bg-white">
           <form phx-submit="send_message" id="chat-form" phx-hook="ChatForm" class="flex gap-2">
