@@ -31,6 +31,13 @@ let Hooks = {
         }, 0);
       });
     }
+  },
+  Piano: {
+    mounted() {
+      import("./piano").then(module => {
+        new module.default();
+      });
+    }
   }
 }
 

@@ -283,6 +283,4 @@ class PianoRoll {
     }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    new PianoRoll();
-});
+export default PianoRoll;
