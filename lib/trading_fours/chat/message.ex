@@ -3,7 +3,7 @@ defmodule TradingFours.Chat.Message do
   import Ecto.Changeset
 
   schema "messages" do
-    field :content, :string
+    field :midi_sequence, :map
     field :author, :string
     field :room_id, :string
     field :color, :string
@@ -13,7 +13,7 @@ defmodule TradingFours.Chat.Message do
 
   def changeset(message, attrs) do
     message
-    |> cast(attrs, [:content, :author, :room_id, :color])
-    |> validate_required([:content, :author, :room_id, :color])
+    |> cast(attrs, [:midi_sequence, :author, :room_id, :color])
+    |> validate_required([:midi_sequence, :author, :room_id, :color])
   end
 end

@@ -35,20 +35,18 @@ defmodule TradingFoursWeb.ChatController do
         <div class="flex-1 overflow-y-auto">
           <div class="flex flex-col-reverse min-h-full p-4 space-y-reverse space-y-2">
             <%= for msg <- @messages do %>
-              <%= if msg.author == @username do %>
-                <div class="message py-1 flex justify-end">
-                  <div class="bg-blue-500 text-white px-4 py-2 rounded-lg max-w-[50%]">
-                    <%= msg.content %>
+              <div class="message py-1 flex justify-start">
+                <div class="bg-gray-100 px-4 py-2 rounded-lg">
+                  <div class="text-sm" style={"color: #{msg.color}"}><%= msg.author %></div>
+                  <div class="midi-sequence" 
+                       phx-hook="PlayMidiSequence" 
+                       data-sequence={Jason.encode!(msg.midi_sequence)}>
+                    <button class="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 transition">
+                      Play Sequence
+                    </button>
                   </div>
                 </div>
-              <% else %>
-                <div class="message py-1 flex justify-start">
-                  <div class="bg-gray-100 px-4 py-2 rounded-lg max-w-[50%]">
-                    <div class="text-sm" style={"color: #{msg.color}"}><%= msg.author %></div>
-                    <div><%= msg.content %></div>
-                  </div>
-                </div>
-              <% end %>
+              </div>
             <% end %>
           </div>
         </div>
@@ -62,11 +60,9 @@ defmodule TradingFoursWeb.ChatController do
             <canvas id="pianoKeys" class="piano-keys"></canvas>
         </div>
         <div class="flex-none border-t border-gray-200 p-4 bg-white">
-          <form phx-submit="send_message" id="chat-form" phx-hook="ChatForm" class="flex gap-2">
-            <input type="text" name="message" placeholder="Type a message..." id="chat-input"
-                   class="flex-1 rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:border-blue-500">
-            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">Send</button>
-          </form>
+          <button phx-click="send_midi" class="w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+            Send Piano Sequence
+          </button>
         </div>
       <% else %>
         <div class="h-screen flex flex-col items-center justify-center p-4 space-y-4">
@@ -120,11 +116,21 @@ defmodule TradingFoursWeb.ChatController do
     {:noreply, assign(socket, username: username, user_color: color)}
   end
 
-  def handle_event("send_message", %{"message" => message}, socket) do
-    message_item = %{author: socket.assigns.username, content: message, color: socket.assigns.user_color}
+  def handle_event("send_midi", _params, socket) do
+    # The JS hook will need to send the MIDI sequence data via a separate event
+    {:noreply, socket}
+  end
+
+  def handle_event("midi_sequence_ready", %{"sequence" => midi_sequence}, socket) do
+    message_item = %{
+      author: socket.assigns.username, 
+      midi_sequence: midi_sequence, 
+      color: socket.assigns.user_color
+    }
+    
     %Message{}
     |> Message.changeset(%{
-      content: message,
+      midi_sequence: midi_sequence,
       author: socket.assigns.username,
       room_id: socket.assigns.room_id,
       color: socket.assigns.user_color
