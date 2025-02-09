@@ -1,7 +1,7 @@
 class PianoRoll {
-    constructor() {
-        this.pianoRoll = document.getElementById("pianoRoll");
-        this.pianoKeys = document.getElementById("pianoKeys");
+    constructor(pianoRollElement, pianoKeysElement) {
+        this.pianoRoll = pianoRollElement || document.getElementById("pianoRoll");
+        this.pianoKeys = pianoKeysElement || document.getElementById("pianoKeys");
         this.rollCtx = this.pianoRoll.getContext("2d");
         this.keysCtx = this.pianoKeys.getContext("2d");
 
@@ -330,6 +330,14 @@ class PianoRoll {
         const noteName = note.slice(0, -1);
         const octave = parseInt(note.slice(-1)) - 4;
         return (octave * 12 + noteMap[noteName]) * this.noteHeight;
+    }
+
+    getRecordedNotes() {
+        return this.recordedNotes.map(note => ({
+            note: note.note,
+            time: note.time,
+            duration: note.duration
+        }));
     }
 }
 

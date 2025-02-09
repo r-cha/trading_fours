@@ -35,7 +35,16 @@ let Hooks = {
   Piano: {
     mounted() {
       import("./piano").then(module => {
-        new module.default();
+        const piano = new module.default();
+        
+        // Listen for the request_midi_sequence event from the server
+        this.handleEvent("request_midi_sequence", () => {
+          const sequence = piano.getRecordedNotes();
+          // Send the sequence back to the server
+          this.pushEvent("midi_sequence_ready", {
+            sequence: sequence
+          });
+        });
       });
     }
   }
