@@ -132,6 +132,8 @@ defmodule TradingFoursWeb.ChatController do
     {:noreply, assign(socket, messages: new_messages)}
   end
 
+  def init(params), do: {:ok, params}
+
   def redirect_to_room(conn, _params) do
     redirect(conn, to: ~p"/chat/#{Ecto.UUID.generate()}")
   end
