@@ -1,6 +1,8 @@
 defmodule TradingFoursWeb.ChatController do
   use TradingFoursWeb, :live_view
   alias TradingFoursWeb.Presence
+  alias TradingFours.Chat.Message
+  alias TradingFours.Repo
   def topic(room_id), do: "chat:#{room_id}"
   def presence_topic(room_id), do: "chat:#{room_id}:presence"
   @colors ["#FF6B6B", "#4ECDC4", "#45B7D1", "#96CEB4", "#FFEEAD", "#D4A5A5", "#9B59B6", "#3498DB", "#F1C40F", "#E74C3C"]
@@ -77,9 +79,16 @@ defmodule TradingFoursWeb.ChatController do
       Phoenix.PubSub.subscribe(TradingFours.PubSub, presence_topic(room_id))
     end
     
+    messages = Repo.all(
+      from m in Message,
+      where: m.room_id == ^room_id,
+      order_by: [desc: m.inserted_at],
+      limit: 100
+    )
+    
     {:ok, assign(socket, 
       room_id: room_id,
-      messages: [], 
+      messages: messages, 
       username: nil, 
       user_color: nil, 
       online_users: %{}
@@ -104,6 +113,15 @@ defmodule TradingFoursWeb.ChatController do
 
   def handle_event("send_message", %{"message" => message}, socket) do
     message_item = %{author: socket.assigns.username, content: message, color: socket.assigns.user_color}
+    %Message{}
+    |> Message.changeset(%{
+      content: message,
+      author: socket.assigns.username,
+      room_id: socket.assigns.room_id,
+      color: socket.assigns.user_color
+    })
+    |> Repo.insert()
+    
     Phoenix.PubSub.broadcast(TradingFours.PubSub, topic(socket.assigns.room_id), {:new_message, message_item})
     {:noreply, socket}
   end
