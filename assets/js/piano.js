@@ -67,9 +67,6 @@ class PianoRoll {
             if (note) {
                 this.playNote(note);
             }
-        };
-        console.log("Recording Note:", recordedNote);
-        this.recordedNotes.push(recordedNote);
 
         this.pianoKeys.addEventListener("mousemove", (e) => {
             if (!isMouseDown) return;
@@ -77,7 +74,9 @@ class PianoRoll {
             if (note && !this.pressedKeys.has(note)) {
                 this.playNote(note);
             }
-        });
+        };
+        console.log("Recording Note:", recordedNote);
+        this.recordedNotes.push(recordedNote);
 
         document.addEventListener("mouseup", () => {
             isMouseDown = false;
@@ -86,7 +85,7 @@ class PianoRoll {
             });
             this.pressedKeys.clear();
             this.render();
-        });
+        };
 
         document.getElementById("playButton").addEventListener("click", () => {
             if (this.recordedNotes.length > 0) {
