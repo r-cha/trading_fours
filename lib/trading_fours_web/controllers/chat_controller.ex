@@ -38,13 +38,19 @@ defmodule TradingFoursWeb.ChatController do
               <div class="message py-1 flex justify-start">
                 <div class="bg-gray-100 px-4 py-2 rounded-lg">
                   <div class="text-sm" style={"color: #{msg.color}"}><%= msg.author %></div>
-                  <div class="midi-sequence" 
+                  <div class="midi-sequence-player" 
                        id={"midi-sequence-#{msg.id}"} 
-                       phx-hook="PlayMidiSequence" 
-                       data-sequence={Jason.encode!(msg.midi_sequence)}>
-                    <button class="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 transition">
-                      Play Sequence
-                    </button>
+                       phx-hook="MidiPlayer">
+                    <div class="flex flex-col gap-2">
+                      <div class="mini-piano-roll">
+                        <canvas id={"piano-roll-#{msg.id}"} 
+                                class="w-full h-32"
+                                data-sequence={Jason.encode!(msg.midi_sequence)}></canvas>
+                      </div>
+                      <button class="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 transition">
+                        Play Sequence
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -123,22 +129,28 @@ defmodule TradingFoursWeb.ChatController do
   end
 
   def handle_event("midi_sequence_ready", %{"sequence" => midi_sequence}, socket) do
-    message_item = %{
-      author: socket.assigns.username, 
-      midi_sequence: midi_sequence, 
-      color: socket.assigns.user_color
-    }
-    
-    %Message{}
-    |> Message.changeset(%{
-      midi_sequence: midi_sequence,
-      author: socket.assigns.username,
-      room_id: socket.assigns.room_id,
-      color: socket.assigns.user_color
-    })
-    |> Repo.insert()
-    
-    Phoenix.PubSub.broadcast(TradingFours.PubSub, topic(socket.assigns.room_id), {:new_message, message_item})
+    case Repo.insert(
+      %Message{}
+      |> Message.changeset(%{
+        midi_sequence: midi_sequence,
+        author: socket.assigns.username,
+        room_id: socket.assigns.room_id,
+        color: socket.assigns.user_color
+      })
+    ) do
+      {:ok, message} ->
+        message_item = %{
+          id: message.id,
+          author: message.author,
+          midi_sequence: message.midi_sequence,
+          color: message.color
+        }
+        Phoenix.PubSub.broadcast(TradingFours.PubSub, topic(socket.assigns.room_id), {:new_message, message_item})
+        {:noreply, update(socket, :messages, &[message_item | &1])}
+      
+      {:error, _changeset} ->
+        {:noreply, socket}
+    end
     {:noreply, socket}
   end
 
