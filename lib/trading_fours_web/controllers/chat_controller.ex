@@ -53,14 +53,13 @@ defmodule TradingFoursWeb.ChatController do
           </div>
         </div>
 
-         <div class="piano-container">
+         <div class="piano-container" id="piano-container" phx-hook="Piano">
             <div class="flex justify-center gap-2 mb-2">
               <button id="playButton" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition">Play</button>
               <button id="clearButton" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">Clear</button>
             </div>
             <canvas id="pianoRoll" class="piano-roll"></canvas>
             <canvas id="pianoKeys" class="piano-keys"></canvas>
-        <script defer type="text/javascript" src={~p"/assets/piano.js"}></script>
         </div>
         <div class="flex-none border-t border-gray-200 p-4 bg-white">
           <form phx-submit="send_message" id="chat-form" phx-hook="ChatForm" class="flex gap-2">
