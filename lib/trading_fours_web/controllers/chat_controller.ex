@@ -1,5 +1,6 @@
 defmodule TradingFoursWeb.ChatController do
   use TradingFoursWeb, :live_view
+  @topic "chat"
 
   def render(assigns) do
     ~H"""
@@ -24,6 +25,10 @@ defmodule TradingFoursWeb.ChatController do
   end
 
   def mount(_params, _session, socket) do
+    if connected?(socket) do
+      Phoenix.PubSub.subscribe(TradingFours.PubSub, @topic)
+    end
+    
     {:ok, assign(socket, messages: [], username: nil)}
   end
 
@@ -32,9 +37,14 @@ defmodule TradingFoursWeb.ChatController do
   end
 
   def handle_event("send_message", %{"message" => message}, socket) do
-    new_messages = [
-      %{author: socket.assigns.username, content: message} | socket.assigns.messages
-    ]
+    message_item = %{author: socket.assigns.username, content: message}
+    Phoenix.PubSub.broadcast(TradingFours.PubSub, @topic, {:new_message, message_item})
+    new_messages = [message_item | socket.assigns.messages]
+    {:noreply, assign(socket, messages: new_messages)}
+  end
+
+  def handle_info({:new_message, message_item}, socket) do
+    new_messages = [message_item | socket.assigns.messages]
     {:noreply, assign(socket, messages: new_messages)}
   end
 end
