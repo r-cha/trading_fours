@@ -1,6 +1,7 @@
 defmodule TradingFoursWeb.ChatController do
   use TradingFoursWeb, :live_view
   @topic "chat"
+  @colors ["#FF6B6B", "#4ECDC4", "#45B7D1", "#96CEB4", "#FFEEAD", "#D4A5A5", "#9B59B6", "#3498DB", "#F1C40F", "#E74C3C"]
 
   def render(assigns) do
     ~H"""
@@ -13,7 +14,7 @@ defmodule TradingFoursWeb.ChatController do
       </form>
       <%= for msg <- @messages do %>
         <div class="message">
-          <strong><%= msg.author %>:</strong> <%= msg.content %>
+          <strong style={"color: #{msg.color}"}><%= msg.author %>:</strong> <%= msg.content %>
         </div>
       <% end %>
     <% else %>
@@ -30,15 +31,16 @@ defmodule TradingFoursWeb.ChatController do
       Phoenix.PubSub.subscribe(TradingFours.PubSub, @topic)
     end
     
-    {:ok, assign(socket, messages: [], username: nil)}
+    {:ok, assign(socket, messages: [], username: nil, user_color: nil)}
   end
 
   def handle_event("set_username", %{"username" => username}, socket) do
-    {:noreply, assign(socket, username: username)}
+    color = Enum.random(@colors)
+    {:noreply, assign(socket, username: username, user_color: color)}
   end
 
   def handle_event("send_message", %{"message" => message}, socket) do
-    message_item = %{author: socket.assigns.username, content: message}
+    message_item = %{author: socket.assigns.username, content: message, color: socket.assigns.user_color}
     Phoenix.PubSub.broadcast(TradingFours.PubSub, @topic, {:new_message, message_item})
     {:noreply, socket}
   end
