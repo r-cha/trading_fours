@@ -39,6 +39,7 @@ defmodule TradingFoursWeb.ChatController do
                 <div class="bg-gray-100 px-4 py-2 rounded-lg">
                   <div class="text-sm" style={"color: #{msg.color}"}><%= msg.author %></div>
                   <div class="midi-sequence" 
+                       id={"midi-sequence-#{msg.id}"} 
                        phx-hook="PlayMidiSequence" 
                        data-sequence={Jason.encode!(msg.midi_sequence)}>
                     <button class="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 transition">
@@ -51,7 +52,7 @@ defmodule TradingFoursWeb.ChatController do
           </div>
         </div>
 
-         <div class="piano-container" id="piano-container" phx-hook="Piano">
+         <div class="piano-container" id="piano-container-main" phx-hook="Piano">
             <div class="flex justify-center gap-2 mb-2">
               <button id="playButton" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition">Play</button>
               <button id="clearButton" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">Clear</button>
