@@ -5,24 +5,37 @@ defmodule TradingFoursWeb.ChatController do
 
   def render(assigns) do
     ~H"""
-    <h1>Chat</h1>
-    <%= if @username do %>
-      <p class="welcome">Welcome, <%= @username %>!</p>
-      <form phx-submit="send_message" id="chat-form" phx-hook="ChatForm">
-        <input type="text" name="message" placeholder="Type a message..." id="chat-input">
-        <button type="submit">Send</button>
-      </form>
-      <%= for msg <- @messages do %>
-        <div class="message">
-          <strong style={"color: #{msg.color}"}><%= msg.author %>:</strong> <%= msg.content %>
+    <div class="chat-container">
+      <%= if @username do %>
+        <header>
+          <h1>Chat</h1>
+          <p class="welcome">Welcome, <%= @username %>!</p>
+        </header>
+
+        <div class="messages-container">
+          <%= for msg <- @messages do %>
+            <div class="message">
+              <strong style={"color: #{msg.color}"}><%= msg.author %>:</strong> <%= msg.content %>
+            </div>
+          <% end %>
+        </div>
+
+        <div class="input-container">
+          <form phx-submit="send_message" id="chat-form" phx-hook="ChatForm">
+            <input type="text" name="message" placeholder="Type a message..." id="chat-input">
+            <button type="submit">Send</button>
+          </form>
+        </div>
+      <% else %>
+        <div class="login-container">
+          <h1>Chat</h1>
+          <form phx-submit="set_username">
+            <input type="text" name="username" placeholder="Enter your name...">
+            <button type="submit">Join Chat</button>
+          </form>
         </div>
       <% end %>
-    <% else %>
-      <form phx-submit="set_username">
-        <input type="text" name="username" placeholder="Enter your name...">
-        <button type="submit">Join Chat</button>
-      </form>
-    <% end %>
+    </div>
     """
   end
 

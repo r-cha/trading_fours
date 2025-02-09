@@ -53,3 +53,17 @@ button {
 button:hover {
   background: #0056b3;
 }
+
+.login-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.login-container form {
+  display: flex;
+  gap: 0.5rem;
+}
