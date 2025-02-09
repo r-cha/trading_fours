@@ -55,3 +55,6 @@ liveSocket.connect()
 // >> liveSocket.disableLatencySim()
 window.liveSocket = liveSocket
 
+// Import piano functionality
+import "./piano"
+
