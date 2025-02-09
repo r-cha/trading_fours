@@ -124,8 +124,8 @@ defmodule TradingFoursWeb.ChatController do
   end
 
   def handle_event("send_midi", _params, socket) do
-    # The JS hook will need to send the MIDI sequence data via a separate event
-    {:noreply, socket}
+    # Push an event to the Piano hook to request the current sequence
+    {:noreply, push_event(socket, "request_midi_sequence", %{})}
   end
 
   def handle_event("midi_sequence_ready", %{"sequence" => midi_sequence}, socket) do
