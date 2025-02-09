@@ -131,29 +131,64 @@ defmodule TradingFoursWeb.ChatController do
   end
 
   def handle_event("midi_sequence_ready", %{"sequence" => midi_sequence}, socket) do
-    case Repo.insert(
-      %Message{}
-      |> Message.changeset(%{
+    if is_valid_midi_sequence?(midi_sequence) do
+      message_params = %{
         midi_sequence: midi_sequence,
         author: socket.assigns.username,
         room_id: socket.assigns.room_id,
         color: socket.assigns.user_color
-      })
-    ) do
-      {:ok, message} ->
-        message_item = %{
-          id: message.id,
-          author: message.author,
-          midi_sequence: message.midi_sequence,
-          color: message.color,
-          inserted_at: message.inserted_at
-        }
-        Phoenix.PubSub.broadcast(TradingFours.PubSub, topic(socket.assigns.room_id), {:new_message, message_item})
-        {:noreply, assign(socket, :messages, socket.assigns.messages ++ [message_item])}
-      
-      {:error, _changeset} ->
-        {:noreply, socket}
+      }
+
+      case Repo.insert(%Message{} |> Message.changeset(message_params)) do
+        {:ok, message} ->
+          message_item = %{
+            id: message.id,
+            author: message.author,
+            midi_sequence: message.midi_sequence,
+            color: message.color,
+            inserted_at: message.inserted_at
+          }
+          
+          # Broadcast to all users in the room
+          Phoenix.PubSub.broadcast(
+            TradingFours.PubSub, 
+            topic(socket.assigns.room_id), 
+            {:new_message, message_item}
+          )
+          
+          {:noreply, 
+            socket 
+            |> assign(:messages, socket.assigns.messages ++ [message_item])
+            |> put_flash(:info, "MIDI sequence sent successfully")}
+        
+        {:error, changeset} ->
+          {:noreply, 
+            socket
+            |> put_flash(:error, "Failed to send MIDI sequence: #{error_messages(changeset)}")}
+      end
+    else
+      {:noreply, 
+        socket
+        |> put_flash(:error, "Invalid MIDI sequence format")}
     end
+  end
+
+  # Validate MIDI sequence format
+  defp is_valid_midi_sequence?(sequence) when is_list(sequence) do
+    Enum.all?(sequence, fn note ->
+      is_map(note) and
+      is_integer(note["note"]) and
+      is_number(note["time"]) and
+      is_number(note["duration"])
+    end)
+  end
+  defp is_valid_midi_sequence?(_), do: false
+
+  # Format error messages
+  defp error_messages(changeset) do
+    Ecto.Changeset.traverse_errors(changeset, fn {msg, _opts} -> msg end)
+    |> Enum.map(fn {k, v} -> "#{k} #{v}" end)
+    |> Enum.join(", ")
   end
 
   def handle_info({:new_message, message_item}, socket) do
