@@ -10,6 +10,7 @@ defmodule TradingFoursWeb.ChatController do
 
   def render(assigns) do
     ~H"""
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
     <div class="h-[calc(100vh-64px)] flex flex-col">
       <%= if @username do %>
         <div class="flex-none">
@@ -54,6 +55,10 @@ defmodule TradingFoursWeb.ChatController do
         </div>
 
          <div class="piano-container">
+            <div class="flex justify-center gap-2 mb-2">
+              <button id="playButton" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition">Play</button>
+              <button id="clearButton" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">Clear</button>
+            </div>
             <canvas id="pianoRoll" class="piano-roll"></canvas>
             <canvas id="pianoKeys" class="piano-keys"></canvas>
         </div>
