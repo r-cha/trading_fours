@@ -39,17 +39,19 @@ class PianoRoll {
         const resizeCanvas = () => {
             const container = this.pianoRoll.parentElement;
             const width = container.clientWidth;
-
-            this.pianoRoll.width = width;
-            this.pianoRoll.height = 300;
-            this.pianoKeys.width = width;
-            this.pianoKeys.height = 120;
-
-            this.render();
+            
+            if (width !== this.pianoRoll.width) {
+                this.pianoRoll.width = width;
+                this.pianoKeys.width = width;
+                this.render();
+            }
         };
 
+        // Initial render
+        this.render();
+        
+        // Handle future resizes
         window.addEventListener("resize", resizeCanvas);
-        resizeCanvas();
     }
 
     setupSynth() {

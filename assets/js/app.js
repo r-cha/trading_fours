@@ -34,17 +34,19 @@ let Hooks = {
   },
   Piano: {
     mounted() {
+      const container = this.el;
+      const pianoRoll = container.querySelector("#pianoRoll");
+      const pianoKeys = container.querySelector("#pianoKeys");
+      
+      // Set initial dimensions
+      const width = container.clientWidth;
+      pianoRoll.width = width;
+      pianoRoll.height = 300;
+      pianoKeys.width = width;
+      pianoKeys.height = 120;
+
       import("./piano").then(module => {
-        const piano = new module.default();
-        
-        // Force an immediate resize to fix initial rendering
-        const container = document.getElementById("piano-container-main");
-        const width = container.clientWidth;
-        piano.pianoRoll.width = width;
-        piano.pianoRoll.height = 300;
-        piano.pianoKeys.width = width;
-        piano.pianoKeys.height = 120;
-        piano.render();
+        const piano = new module.default(pianoRoll, pianoKeys);
         
         // Listen for the request_midi_sequence event from the server
         this.handleEvent("request_midi_sequence", () => {
