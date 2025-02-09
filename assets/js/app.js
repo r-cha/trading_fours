@@ -47,6 +47,14 @@ let Hooks = {
         });
       });
     }
+  },
+  MidiPlayer: {
+    mounted() {
+      import("./hooks/midi_player").then(module => {
+        Object.assign(this, module.default);
+        this.mounted();
+      });
+    }
   }
 }
 
