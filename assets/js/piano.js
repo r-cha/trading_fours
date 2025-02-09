@@ -67,7 +67,9 @@ class PianoRoll {
             if (note) {
                 this.playNote(note);
             }
-        });
+        };
+        console.log("Recording Note:", recordedNote);
+        this.recordedNotes.push(recordedNote);
 
         this.pianoKeys.addEventListener("mousemove", (e) => {
             if (!isMouseDown) return;
@@ -118,6 +120,7 @@ class PianoRoll {
     }
 
     playNote(note) {
+        console.log("Playing Note:", note);
         this.pressedKeys.add(note);
         this.synth.triggerAttack(note);
 
@@ -127,7 +130,7 @@ class PianoRoll {
         }
 
         const time = Date.now() - this.recordingStartTime;
-        this.recordedNotes.push({
+        const recordedNote = {
             note,
             time: time, // Remove quantization
             duration: this.whiteKeyWidth,

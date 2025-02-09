@@ -51,7 +51,7 @@ let Hooks = {
         // Listen for the request_midi_sequence event from the server
         this.handleEvent("request_midi_sequence", () => {
           const sequence = piano.getRecordedNotes();
-          // Send the sequence back to the server
+          console.log("Sending MIDI Sequence:", sequence);
           this.pushEvent("midi_sequence_ready", {
             sequence: sequence
           });

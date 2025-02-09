@@ -131,9 +131,9 @@ defmodule TradingFoursWeb.ChatController do
   end
 
   def handle_event("midi_sequence_ready", %{"sequence" => midi_sequence}, socket) do
-    # Allow empty sequence for new room creation
+    IO.inspect(midi_sequence, label: "Received MIDI Sequence")
     if is_nil(midi_sequence) || is_valid_midi_sequence?(midi_sequence) do
-      # Convert the sequence to a format that can be stored
+      IO.inspect(processed_sequence, label: "Processed MIDI Sequence")
       processed_sequence = if is_list(midi_sequence) do
         Enum.map(midi_sequence, fn note ->
           %{
