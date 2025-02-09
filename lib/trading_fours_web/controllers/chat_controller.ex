@@ -39,8 +39,7 @@ defmodule TradingFoursWeb.ChatController do
   def handle_event("send_message", %{"message" => message}, socket) do
     message_item = %{author: socket.assigns.username, content: message}
     Phoenix.PubSub.broadcast(TradingFours.PubSub, @topic, {:new_message, message_item})
-    new_messages = [message_item | socket.assigns.messages]
-    {:noreply, assign(socket, messages: new_messages)}
+    {:noreply, socket}
   end
 
   def handle_info({:new_message, message_item}, socket) do
