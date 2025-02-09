@@ -5,33 +5,35 @@ defmodule TradingFoursWeb.ChatController do
 
   def render(assigns) do
     ~H"""
-    <div class="chat-container">
+    <div class="h-screen flex flex-col">
       <%= if @username do %>
-        <header>
-          <h1>Chat</h1>
-          <p class="welcome">Welcome, <%= @username %>!</p>
+        <header class="bg-white border-b border-gray-200 p-4">
+          <h1 class="text-2xl font-bold">Chat</h1>
+          <p class="text-gray-600">Welcome, <%= @username %>!</p>
         </header>
 
-        <div class="messages-container">
+        <div class="flex-1 overflow-y-auto flex flex-col-reverse p-4 space-y-reverse space-y-2">
           <%= for msg <- @messages do %>
-            <div class="message">
+            <div class="message py-1">
               <strong style={"color: #{msg.color}"}><%= msg.author %>:</strong> <%= msg.content %>
             </div>
           <% end %>
         </div>
 
-        <div class="input-container">
-          <form phx-submit="send_message" id="chat-form" phx-hook="ChatForm">
-            <input type="text" name="message" placeholder="Type a message..." id="chat-input">
-            <button type="submit">Send</button>
+        <div class="border-t border-gray-200 p-4 bg-white">
+          <form phx-submit="send_message" id="chat-form" phx-hook="ChatForm" class="flex gap-2">
+            <input type="text" name="message" placeholder="Type a message..." id="chat-input"
+                   class="flex-1 rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:border-blue-500">
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">Send</button>
           </form>
         </div>
       <% else %>
-        <div class="login-container">
-          <h1>Chat</h1>
-          <form phx-submit="set_username">
-            <input type="text" name="username" placeholder="Enter your name...">
-            <button type="submit">Join Chat</button>
+        <div class="h-screen flex flex-col items-center justify-center p-4 space-y-4">
+          <h1 class="text-2xl font-bold">Chat</h1>
+          <form phx-submit="set_username" class="flex gap-2">
+            <input type="text" name="username" placeholder="Enter your name..." 
+                   class="rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:border-blue-500">
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">Join Chat</button>
           </form>
         </div>
       <% end %>
