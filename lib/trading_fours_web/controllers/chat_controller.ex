@@ -11,6 +11,7 @@ defmodule TradingFoursWeb.ChatController do
   def render(assigns) do
     ~H"""
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <script src={~p"/assets/piano.js"}></script>
     <div class="h-[calc(100vh-64px)] flex flex-col">
       <%= if @username do %>
         <div class="flex-none">
