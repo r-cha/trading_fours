@@ -7,27 +7,30 @@ defmodule TradingFoursWeb.ChatController do
 
   def render(assigns) do
     ~H"""
-    <div class="h-screen flex flex-col">
+    <div class="h-[calc(100vh-64px)] flex flex-col">
       <%= if @username do %>
-        <div class="flex">
-          <div class="flex-1">
-            <header class="bg-white border-b border-gray-200 p-4">
-              <h1 class="text-2xl font-bold">Chat</h1>
-              <p class="text-gray-600">Welcome, <%= @username %>!</p>
-            </header>
-          </div>
-          <div class="w-64 bg-gray-50 border-l border-gray-200 p-4">
-            <h2 class="text-lg font-semibold mb-2">Online Users</h2>
-            <%= for {username, user_data} <- @online_users do %>
-              <div class="flex items-center space-x-2 mb-1">
-                <div class="w-2 h-2 rounded-full bg-green-400"></div>
-                <span style={"color: #{user_data.color}"}><%= username %></span>
-              </div>
-            <% end %>
+        <div class="flex-none">
+          <div class="flex">
+            <div class="flex-1">
+              <header class="bg-white border-b border-gray-200 p-4">
+                <h1 class="text-2xl font-bold">Chat</h1>
+                <p class="text-gray-600">Welcome, <%= @username %>!</p>
+              </header>
+            </div>
+            <div class="w-64 bg-gray-50 border-l border-gray-200 p-4">
+              <h2 class="text-lg font-semibold mb-2">Online Users</h2>
+              <%= for {username, user_data} <- @online_users do %>
+                <div class="flex items-center space-x-2 mb-1">
+                  <div class="w-2 h-2 rounded-full bg-green-400"></div>
+                  <span style={"color: #{user_data.color}"}><%= username %></span>
+                </div>
+              <% end %>
+            </div>
           </div>
         </div>
 
-        <div class="flex-1 overflow-y-auto flex flex-col-reverse p-4 space-y-reverse space-y-2">
+        <div class="flex-1 overflow-y-auto">
+          <div class="flex flex-col-reverse min-h-full p-4 space-y-reverse space-y-2">
           <%= for msg <- @messages do %>
             <%= if msg.author == @username do %>
               <div class="message py-1 flex justify-end">
@@ -46,7 +49,7 @@ defmodule TradingFoursWeb.ChatController do
           <% end %>
         </div>
 
-        <div class="border-t border-gray-200 p-4 bg-white">
+        <div class="flex-none border-t border-gray-200 p-4 bg-white">
           <form phx-submit="send_message" id="chat-form" phx-hook="ChatForm" class="flex gap-2">
             <input type="text" name="message" placeholder="Type a message..." id="chat-input"
                    class="flex-1 rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:border-blue-500">
