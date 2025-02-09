@@ -34,13 +34,13 @@ defmodule TradingFoursWeb.ChatController do
             <%= for msg <- @messages do %>
               <%= if msg.author == @username do %>
                 <div class="message py-1 flex justify-end">
-                  <div class="bg-blue-500 text-white px-4 py-2 rounded-lg max-w-[80%]">
+                  <div class="bg-blue-500 text-white px-4 py-2 rounded-lg max-w-[50%]">
                     <%= msg.content %>
                   </div>
                 </div>
               <% else %>
                 <div class="message py-1 flex justify-start">
-                  <div class="bg-gray-100 px-4 py-2 rounded-lg max-w-[80%]">
+                  <div class="bg-gray-100 px-4 py-2 rounded-lg max-w-[50%]">
                     <div class="text-sm" style={"color: #{msg.color}"}><%= msg.author %></div>
                     <div><%= msg.content %></div>
                   </div>
