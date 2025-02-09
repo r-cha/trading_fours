@@ -37,6 +37,15 @@ let Hooks = {
       import("./piano").then(module => {
         const piano = new module.default();
         
+        // Force an immediate resize to fix initial rendering
+        const container = document.getElementById("piano-container-main");
+        const width = container.clientWidth;
+        piano.pianoRoll.width = width;
+        piano.pianoRoll.height = 300;
+        piano.pianoKeys.width = width;
+        piano.pianoKeys.height = 120;
+        piano.render();
+        
         // Listen for the request_midi_sequence event from the server
         this.handleEvent("request_midi_sequence", () => {
           const sequence = piano.getRecordedNotes();
