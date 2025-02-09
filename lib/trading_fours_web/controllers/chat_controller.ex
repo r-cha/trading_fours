@@ -1,5 +1,6 @@
 defmodule TradingFoursWeb.ChatController do
   use TradingFoursWeb, :live_view
+  import Ecto.Query
   alias TradingFoursWeb.Presence
   alias TradingFours.Chat.Message
   alias TradingFours.Repo
@@ -131,7 +132,11 @@ defmodule TradingFoursWeb.ChatController do
     {:noreply, assign(socket, messages: new_messages)}
   end
 
-  def handle_info(%{event: "presence_diff", payload: diff}, socket) do
+  def redirect_to_room(conn, _params) do
+    redirect(conn, to: ~p"/chat/#{Ecto.UUID.generate()}")
+  end
+
+  def handle_info(%{event: "presence_diff", payload: _diff}, socket) do
     online_users = Presence.list(presence_topic(socket.assigns.room_id))
     |> Enum.map(fn {username, %{metas: [meta | _]}} -> 
       {username, meta}
