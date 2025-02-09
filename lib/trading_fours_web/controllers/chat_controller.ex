@@ -32,22 +32,24 @@ defmodule TradingFoursWeb.ChatController do
           </div>
         </div>
 
-        <div class="flex-1 overflow-y-auto">
-          <div class="flex flex-col-reverse min-h-full p-4 space-y-reverse space-y-2">
+        <div class="flex-1 overflow-y-auto mb-4">
+          <div class="flex flex-col-reverse p-4 space-y-reverse space-y-4">
             <%= for msg <- @messages do %>
-              <div class="message py-1 flex justify-start">
-                <div class="bg-gray-100 px-4 py-2 rounded-lg">
-                  <div class="text-sm" style={"color: #{msg.color}"}><%= msg.author %></div>
+              <div class="message flex justify-start">
+                <div class="bg-gray-100 px-4 py-3 rounded-lg w-full">
+                  <div class="flex items-center justify-between mb-2">
+                    <div class="text-sm font-medium" style={"color: #{msg.color}"}><%= msg.author %></div>
+                  </div>
                   <div class="midi-sequence-player" 
                        id={"midi-sequence-#{msg.id}"} 
                        phx-hook="MidiPlayer">
                     <div class="flex flex-col gap-2">
-                      <div class="mini-piano-roll">
+                      <div class="mini-piano-roll border border-gray-200 rounded">
                         <canvas id={"piano-roll-#{msg.id}"} 
-                                class="w-full h-32"
+                                class="w-full h-24"
                                 data-sequence={Jason.encode!(msg.midi_sequence)}></canvas>
                       </div>
-                      <button class="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 transition">
+                      <button class="bg-green-500 text-white px-3 py-1.5 rounded hover:bg-green-600 transition text-sm">
                         Play Sequence
                       </button>
                     </div>
@@ -58,7 +60,7 @@ defmodule TradingFoursWeb.ChatController do
           </div>
         </div>
 
-         <div class="piano-container" id="piano-container-main" phx-hook="Piano">
+        <div class="piano-container flex-none" id="piano-container-main" phx-hook="Piano">
             <div class="flex justify-center gap-2 mb-2">
               <button id="playButton" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition">Play</button>
               <button id="clearButton" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">Clear</button>
