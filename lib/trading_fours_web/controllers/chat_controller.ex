@@ -132,9 +132,7 @@ defmodule TradingFoursWeb.ChatController do
 
   def handle_event("midi_sequence_ready", %{"sequence" => midi_sequence}, socket) do
     IO.inspect(midi_sequence, label: "Received MIDI Sequence")
-    if is_nil(midi_sequence) || is_valid_midi_sequence?(midi_sequence) do
-      IO.inspect(processed_sequence, label: "Processed MIDI Sequence")
-      processed_sequence = if is_list(midi_sequence) do
+    processed_sequence = if is_list(midi_sequence) do
         Enum.map(midi_sequence, fn note ->
           %{
             "note" => note["note"],
@@ -144,6 +142,9 @@ defmodule TradingFoursWeb.ChatController do
         end)
       end
 
+    if is_nil(midi_sequence) || is_valid_midi_sequence?(midi_sequence) do
+      IO.inspect(processed_sequence, label: "Processed MIDI Sequence")
+      
       message_params = %{
         midi_sequence: processed_sequence || midi_sequence,
         author: socket.assigns.username,
