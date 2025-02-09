@@ -179,7 +179,7 @@ defmodule TradingFoursWeb.ChatController do
   defp is_valid_midi_sequence?(sequence) when is_list(sequence) do
     Enum.all?(sequence, fn note ->
       is_map(note) and
-      is_integer(note["note"]) and
+      (is_integer(note["note"]) or is_binary(note["note"])) and
       is_number(note["time"]) and
       is_number(note["duration"])
     end)
