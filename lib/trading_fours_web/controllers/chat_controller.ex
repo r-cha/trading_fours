@@ -1,16 +1,31 @@
 defmodule TradingFoursWeb.ChatController do
   use TradingFoursWeb, :live_view
+  alias TradingFoursWeb.Presence
   @topic "chat"
+  @presence_topic "chat:presence"
   @colors ["#FF6B6B", "#4ECDC4", "#45B7D1", "#96CEB4", "#FFEEAD", "#D4A5A5", "#9B59B6", "#3498DB", "#F1C40F", "#E74C3C"]
 
   def render(assigns) do
     ~H"""
     <div class="h-[calc(100vh-40px)] flex flex-col mt-10">
       <%= if @username do %>
-        <header class="bg-white border-b border-gray-200 p-4">
-          <h1 class="text-2xl font-bold">Chat</h1>
-          <p class="text-gray-600">Welcome, <%= @username %>!</p>
-        </header>
+        <div class="flex">
+          <div class="flex-1">
+            <header class="bg-white border-b border-gray-200 p-4">
+              <h1 class="text-2xl font-bold">Chat</h1>
+              <p class="text-gray-600">Welcome, <%= @username %>!</p>
+            </header>
+          </div>
+          <div class="w-64 bg-gray-50 border-l border-gray-200 p-4">
+            <h2 class="text-lg font-semibold mb-2">Online Users</h2>
+            <%= for {username, user_data} <- @online_users do %>
+              <div class="flex items-center space-x-2 mb-1">
+                <div class="w-2 h-2 rounded-full bg-green-400"></div>
+                <span style={"color: #{user_data.color}"}><%= username %></span>
+              </div>
+            <% end %>
+          </div>
+        </div>
 
         <div class="flex-1 overflow-y-auto flex flex-col-reverse p-4 space-y-reverse space-y-2">
           <%= for msg <- @messages do %>
@@ -55,13 +70,25 @@ defmodule TradingFoursWeb.ChatController do
   def mount(_params, _session, socket) do
     if connected?(socket) do
       Phoenix.PubSub.subscribe(TradingFours.PubSub, @topic)
+      Phoenix.PubSub.subscribe(TradingFours.PubSub, @presence_topic)
     end
     
-    {:ok, assign(socket, messages: [], username: nil, user_color: nil)}
+    {:ok, assign(socket, messages: [], username: nil, user_color: nil, online_users: %{})}
   end
 
   def handle_event("set_username", %{"username" => username}, socket) do
     color = Enum.random(@colors)
+    
+    {:ok, _} = Presence.track(
+      self(),
+      @presence_topic,
+      username,
+      %{
+        color: color,
+        online_at: inspect(System.system_time(:second))
+      }
+    )
+    
     {:noreply, assign(socket, username: username, user_color: color)}
   end
 
@@ -74,5 +101,15 @@ defmodule TradingFoursWeb.ChatController do
   def handle_info({:new_message, message_item}, socket) do
     new_messages = [message_item | socket.assigns.messages]
     {:noreply, assign(socket, messages: new_messages)}
+  end
+
+  def handle_info(%{event: "presence_diff", payload: diff}, socket) do
+    online_users = Presence.list(@presence_topic)
+    |> Enum.map(fn {username, %{metas: [meta | _]}} -> 
+      {username, meta}
+    end)
+    |> Enum.into(%{})
+    
+    {:noreply, assign(socket, :online_users, online_users)}
   end
 end
