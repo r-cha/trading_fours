@@ -12,6 +12,7 @@ defmodule TradingFours.Application do
       TradingFours.Repo,
       {DNSCluster, query: Application.get_env(:trading_fours, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: TradingFours.PubSub},
+      TradingFoursWeb.Presence,
       # Start the Finch HTTP client for sending emails
       {Finch, name: TradingFours.Finch},
       # Start a worker by calling: TradingFours.Worker.start_link(arg)
