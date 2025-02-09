@@ -31,22 +31,23 @@ defmodule TradingFoursWeb.ChatController do
 
         <div class="flex-1 overflow-y-auto">
           <div class="flex flex-col-reverse min-h-full p-4 space-y-reverse space-y-2">
-          <%= for msg <- @messages do %>
-            <%= if msg.author == @username do %>
-              <div class="message py-1 flex justify-end">
-                <div class="bg-blue-500 text-white px-4 py-2 rounded-lg max-w-[80%]">
-                  <%= msg.content %>
+            <%= for msg <- @messages do %>
+              <%= if msg.author == @username do %>
+                <div class="message py-1 flex justify-end">
+                  <div class="bg-blue-500 text-white px-4 py-2 rounded-lg max-w-[80%]">
+                    <%= msg.content %>
+                  </div>
                 </div>
-              </div>
-            <% else %>
-              <div class="message py-1 flex justify-start">
-                <div class="bg-gray-100 px-4 py-2 rounded-lg max-w-[80%]">
-                  <div class="text-sm" style={"color: #{msg.color}"}><%= msg.author %></div>
-                  <div><%= msg.content %></div>
+              <% else %>
+                <div class="message py-1 flex justify-start">
+                  <div class="bg-gray-100 px-4 py-2 rounded-lg max-w-[80%]">
+                    <div class="text-sm" style={"color: #{msg.color}"}><%= msg.author %></div>
+                    <div><%= msg.content %></div>
+                  </div>
                 </div>
-              </div>
+              <% end %>
             <% end %>
-          <% end %>
+          </div>
         </div>
 
         <div class="flex-none border-t border-gray-200 p-4 bg-white">
