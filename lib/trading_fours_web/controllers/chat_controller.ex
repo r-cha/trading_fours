@@ -133,14 +133,25 @@ defmodule TradingFoursWeb.ChatController do
   def handle_event("midi_sequence_ready", %{"sequence" => midi_sequence}, socket) do
     # Allow empty sequence for new room creation
     if is_nil(midi_sequence) || is_valid_midi_sequence?(midi_sequence) do
+      # Convert the sequence to a format that can be stored
+      processed_sequence = if is_list(midi_sequence) do
+        Enum.map(midi_sequence, fn note ->
+          %{
+            "note" => note["note"],
+            "time" => note["time"],
+            "duration" => note["duration"]
+          }
+        end)
+      end
+
       message_params = %{
-        midi_sequence: midi_sequence,
+        midi_sequence: processed_sequence || midi_sequence,
         author: socket.assigns.username,
         room_id: socket.assigns.room_id,
         color: socket.assigns.user_color
       }
 
-      case Repo.insert(%Message{} |> Message.changeset(message_params)) do
+      case create_message(message_params) do
         {:ok, message} ->
           message_item = %{
             id: message.id,
@@ -186,12 +197,31 @@ defmodule TradingFoursWeb.ChatController do
   end
   defp is_valid_midi_sequence?(_), do: false
 
+  # Create a new message with error handling
+  defp create_message(params) do
+    %Message{}
+    |> Message.changeset(params)
+    |> Repo.insert()
+  end
+
   # Format error messages
   defp error_messages(changeset) do
     Ecto.Changeset.traverse_errors(changeset, fn {msg, _opts} -> msg end)
     |> Enum.map(fn {k, v} -> "#{k} #{v}" end)
     |> Enum.join(", ")
   end
+
+  # Ensure the sequence is properly formatted for storage
+  defp process_midi_sequence(sequence) when is_list(sequence) do
+    Enum.map(sequence, fn note ->
+      %{
+        "note" => note["note"],
+        "time" => note["time"],
+        "duration" => note["duration"]
+      }
+    end)
+  end
+  defp process_midi_sequence(sequence), do: sequence
 
   def handle_info({:new_message, message_item}, socket) do
     {:noreply, assign(socket, :messages, socket.assigns.messages ++ [message_item])}
