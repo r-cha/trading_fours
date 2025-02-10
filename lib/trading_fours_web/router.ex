@@ -19,7 +19,7 @@ defmodule TradingFoursWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
-    
+
     get "/chat", ChatRedirectController, :redirect_to_room
     live "/chat/:room_id", ChatController
   end
