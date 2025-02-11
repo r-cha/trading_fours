@@ -9,7 +9,7 @@ export const Player = ({ sequence }) => {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    drawMiniPianoRoll(canvas, midiEvents);
+    if (canvas) drawMiniPianoRoll(canvas, midiEvents);
   }, [midiEvents]);
 
   const drawMiniPianoRoll = (canvas, midiEvents) => {
@@ -131,7 +131,7 @@ export const Player = ({ sequence }) => {
 
   return (
     <div className="w-fit">
-      <canvas ref={canvasRef} data-sequence={sequence}></canvas>
+      <canvas ref={canvasRef} data-sequence={sequence} width={300} height={150} ></canvas>
       <button onClick={() => playSequence(midiEvents)} disabled={isPlaying}>
         {isPlaying ? "Playing..." : "Play Sequence"}
       </button>
