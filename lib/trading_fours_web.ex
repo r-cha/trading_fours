@@ -90,6 +90,8 @@ defmodule TradingFoursWeb do
       # Core UI components
       import TradingFoursWeb.CoreComponents
 
+      import LiveReact
+
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS
 

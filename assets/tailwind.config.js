@@ -9,7 +9,8 @@ module.exports = {
   content: [
     "./js/**/*.js",
     "../lib/trading_fours_web.ex",
-    "../lib/trading_fours_web/**/*.*ex"
+    "../lib/trading_fours_web/**/*.*ex",
+    "./react-components/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {

@@ -20,60 +20,19 @@ import "phoenix_html"
 // Establish Phoenix Socket and LiveView configuration.
 import {Socket} from "phoenix"
 import {LiveSocket} from "phoenix_live_view"
-import topbar from "../vendor/topbar"
+import topbar from "topbar"
+import { getHooks } from "live_react"
+import components from "../react-components"
 
 let Hooks = {
-  ChatForm: {
-    mounted() {
-      this.el.addEventListener("submit", () => {
-        setTimeout(() => {
-          document.getElementById("chat-input").value = "";
-        }, 0);
-      });
-    }
-  },
-  Piano: {
-    mounted() {
-      const container = this.el;
-      const pianoRoll = container.querySelector("#pianoRoll");
-      const pianoKeys = container.querySelector("#pianoKeys");
-      
-      // Set initial dimensions
-      const width = container.clientWidth;
-      pianoRoll.width = width;
-      pianoRoll.height = 300;
-      pianoKeys.width = width;
-      pianoKeys.height = 120;
-
-      import("./piano").then(module => {
-        const piano = new module.default(pianoRoll, pianoKeys);
-        
-        // Listen for the request_midi_sequence event from the server
-        this.handleEvent("request_midi_sequence", () => {
-          const sequence = piano.getRecordedNotes();
-          console.log("Sending MIDI Sequence:", sequence);
-          this.pushEvent("midi_sequence_ready", {
-            sequence: sequence
-          });
-        });
-      });
-    }
-  },
-  MidiPlayer: {
-    mounted() {
-      import("./hooks/midi_player").then(module => {
-        Object.assign(this, module.default);
-        this.mounted();
-      });
-    }
-  }
+  ...getHooks(components),
 }
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 let liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
   params: {_csrf_token: csrfToken},
-  hooks: Hooks
+  hooks: Hooks,
 })
 
 // Show progress bar on live navigation and form submits
@@ -89,7 +48,3 @@ liveSocket.connect()
 // >> liveSocket.enableLatencySim(1000)  // enabled for duration of browser session
 // >> liveSocket.disableLatencySim()
 window.liveSocket = liveSocket
-
-// Import piano functionality
-import "./piano"
-

@@ -61,16 +61,12 @@ defmodule TradingFoursWeb.ChatController do
     {:noreply, assign(socket, username: username, user_color: color)}
   end
 
-  def handle_event("send_midi", _params, socket) do
-    # Push an event to the Piano hook to request the current sequence
-    {:noreply, push_event(socket, "request_midi_sequence", %{})}
-  end
-
-  def handle_event("midi_sequence_ready", %{"sequence" => midi_sequence}, socket) do
-    IO.inspect(midi_sequence, label: "Received MIDI Sequence")
+  def handle_event("send_midi", %{"sequence" => mds}, socket) do
+    sequence = Jason.decode!(mds)
+    IO.inspect(sequence, label: "Received MIDI Sequence")
 
     message_params = %{
-      midi_sequence: midi_sequence,
+      midi_sequence: sequence,
       author: socket.assigns.username,
       room_id: socket.assigns.room_id,
       color: socket.assigns.user_color
@@ -81,25 +77,14 @@ defmodule TradingFoursWeb.ChatController do
       |> Message.changeset(message_params)
       |> Repo.insert!()
 
-    message_item = %{
-      id: message.id,
-      author: message.author,
-      midi_sequence: message.midi_sequence,
-      color: message.color,
-      inserted_at: message.inserted_at
-    }
-
     # Broadcast to all users in the room
     Phoenix.PubSub.broadcast(
       TradingFours.PubSub,
       topic(socket.assigns.room_id),
-      {:new_message, message_item}
+      {:new_message, message}
     )
 
-    {:noreply,
-     socket
-     |> assign(:messages, socket.assigns.messages ++ [message_item])
-     |> put_flash(:info, "MIDI sequence sent successfully")}
+    {:noreply, socket}
   end
 
   def handle_info({:new_message, message_item}, socket) do

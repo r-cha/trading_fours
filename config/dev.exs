@@ -25,8 +25,7 @@ config :trading_fours, TradingFoursWeb.Endpoint,
   debug_errors: true,
   secret_key_base: "+eacsHaUS52CYg8dtP1ytg7NKv8TbuARM6f3FsYPA9kfKOw9d80zCwd6UlUkaAIR",
   watchers: [
-    esbuild: {Esbuild, :install_and_run, [:trading_fours, ~w(--sourcemap=inline --watch)]},
-    tailwind: {Tailwind, :install_and_run, [:trading_fours, ~w(--watch)]}
+    npm: ["run", "dev", cd: Path.expand("../assets", __DIR__)]
   ]
 
 # ## SSL Support
@@ -55,10 +54,16 @@ config :trading_fours, TradingFoursWeb.Endpoint,
 # Watch static and templates for browser reloading.
 config :trading_fours, TradingFoursWeb.Endpoint,
   live_reload: [
+    notify: [
+      live_view: [
+        ~r"lib/trading_fours_web/core_components.ex$",
+        ~r"lib/trading_fours_web/(live|components)/.*(ex|heex)$"
+      ]
+    ],
     patterns: [
       ~r"priv/static/(?!uploads/).*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
-      ~r"lib/trading_fours_web/(controllers|live|components)/.*(ex|heex)$"
+      ~r"lib/trading_fours_web/controllers/.*(ex|heex)$"
     ]
   ]
 
@@ -83,3 +88,9 @@ config :phoenix_live_view,
 
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false
+
+config :live_react,
+  vite_host: "http://localhost:5173",
+  ssr_module: LiveReact.SSR.ViteJS,
+  ssr: true
+

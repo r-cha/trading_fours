@@ -18,7 +18,8 @@ defmodule TradingFours.Application do
       # Start a worker by calling: TradingFours.Worker.start_link(arg)
       # {TradingFours.Worker, arg},
       # Start to serve requests, typically the last entry
-      TradingFoursWeb.Endpoint
+      TradingFoursWeb.Endpoint,
+      {NodeJS.Supervisor, [path: LiveReact.SSR.NodeJS.server_path(), pool_size: 4]},
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
