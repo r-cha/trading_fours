@@ -29,3 +29,7 @@
 - 2-space indentation (no tabs) per .prettierrc
 - TailwindCSS for styling
 - Proper error handling with try/catch and fallbacks
+
+## Feature Locations
+- The keyboard is in `./assets/react-components/piano.jsx` and `./assets/react-components/hooks/usePiano.js`
+- The piano roll is in `./assets/react-components/player.jsx`
