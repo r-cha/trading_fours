@@ -1,0 +1,108 @@
+<!-- 
+This is a template for the social card image.
+To use this:
+1. Render this in a browser at 1200x630px (standard Open Graph dimensions)
+2. Take a screenshot
+3. Save it as tradingfours-social.png in the priv/static/images directory
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Trading Fours Social Card</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #2e3440;
+      color: #eceff4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 1200px;
+      height: 630px;
+      overflow: hidden;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      max-width: 80%;
+    }
+    .title-container {
+      display: flex;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+    .logo {
+      width: 80px;
+      height: 80px;
+      margin-right: 20px;
+    }
+    h1 {
+      font-size: 72px;
+      margin: 0;
+      letter-spacing: -1px;
+    }
+    .tagline {
+      font-size: 36px;
+      margin-bottom: 40px;
+      color: #88c0d0;
+    }
+    .keyboard-graphic {
+      display: flex;
+      margin-top: 40px;
+    }
+    .key {
+      width: 40px;
+      height: 150px;
+      background-color: #eceff4;
+      border: 1px solid #4c566a;
+      border-radius: 0 0 6px 6px;
+      margin: 0 2px;
+    }
+    .key.black {
+      background-color: #3b4252;
+      height: 100px;
+      width: 30px;
+      margin-left: -15px;
+      margin-right: -15px;
+      z-index: 2;
+    }
+    .key.active {
+      background-color: #8fbcbb;
+    }
+    .key.active.black {
+      background-color: #5e81ac;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="title-container">
+      <img src="/images/tradingfourslogo.svg" alt="Trading Fours Logo" class="logo" />
+      <h1>Trading Fours</h1>
+    </div>
+    <div class="tagline">Make music with strangers</div>
+    
+    <div class="keyboard-graphic">
+      <div class="key"></div>
+      <div class="key black"></div>
+      <div class="key"></div>
+      <div class="key black"></div>
+      <div class="key active"></div>
+      <div class="key"></div>
+      <div class="key black"></div>
+      <div class="key"></div>
+      <div class="key black active"></div>
+      <div class="key"></div>
+      <div class="key black"></div>
+      <div class="key active"></div>
+    </div>
+  </div>
+</body>
+</html>

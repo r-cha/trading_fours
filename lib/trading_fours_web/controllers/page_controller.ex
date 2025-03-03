@@ -6,4 +6,9 @@ defmodule TradingFoursWeb.PageController do
     # so skip the default app layout.
     render(conn, :home, layout: false)
   end
+  
+  def social_card(conn, _params) do
+    # Render the social card template for screenshot capture
+    render(conn, :social_card, layout: false)
+  end
 end

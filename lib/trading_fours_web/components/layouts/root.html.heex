@@ -4,8 +4,30 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content={get_csrf_token()} />
+    
+    <!-- Primary Meta Tags -->
+    <meta name="title" content="Trading Fours - Make Music with Strangers" />
+    <meta name="description" content="A piano interface where strangers connect to trade musical phrases, creating spontaneous collaborations. No login required." />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://tradingfours.app/" />
+    <meta property="og:title" content="Trading Fours - Make Music with Strangers" />
+    <meta property="og:description" content="A piano interface where strangers connect to trade musical phrases, creating spontaneous collaborations. No login required." />
+    <meta property="og:image" content={~p"/images/tradingfours-social.png"} />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://tradingfours.app/" />
+    <meta property="twitter:title" content="Trading Fours - Make Music with Strangers" />
+    <meta property="twitter:description" content="A piano interface where strangers connect to trade musical phrases, creating spontaneous collaborations. No login required." />
+    <meta property="twitter:image" content={~p"/images/tradingfours-social.png"} />
+    
+    <!-- Theme color for browser UI -->
+    <meta name="theme-color" content="#2e3440" />
+    
     <link rel="icon" type="image/svg+xml" href={~p"/images/tradingfourslogo.svg"} />
-    <.live_title default="TradingFours">
+    <.live_title default="Trading Fours - Make Music with Strangers">
       {assigns[:page_title]}
     </.live_title>
     <LiveReact.Reload.vite_assets assets={["/js/app.js", "/css/app.css"]}>

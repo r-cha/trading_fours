@@ -22,6 +22,8 @@ defmodule TradingFoursWeb.Router do
 
     get "/chat", ChatRedirectController, :redirect_to_room
     live "/chat/:room_id", ChatController
+    
+    get "/social-card", PageController, :social_card
   end
 
   # Other scopes may use custom stacks.
