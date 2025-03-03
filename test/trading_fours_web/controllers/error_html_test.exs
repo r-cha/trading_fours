@@ -5,10 +5,14 @@ defmodule TradingFoursWeb.ErrorHTMLTest do
   import Phoenix.Template
 
   test "renders 404.html" do
-    assert render_to_string(TradingFoursWeb.ErrorHTML, "404", "html", []) == "Not Found"
+    result = render_to_string(TradingFoursWeb.ErrorHTML, "404", "html", [])
+    assert result =~ "Page Not Found"
+    assert result =~ "Trading Fours Logo"
   end
 
   test "renders 500.html" do
-    assert render_to_string(TradingFoursWeb.ErrorHTML, "500", "html", []) == "Internal Server Error"
+    result = render_to_string(TradingFoursWeb.ErrorHTML, "500", "html", [])
+    assert result =~ "Server Error"
+    assert result =~ "Trading Fours Logo"
   end
 end
