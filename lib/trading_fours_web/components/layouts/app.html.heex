@@ -1,0 +1,27 @@
+<header class="px-4 sm:px-6 lg:px-8 bg-[#2e3440]">
+  <div class="flex items-center justify-between border-b border-[#4c566a] py-3 text-sm">
+    <div class="flex items-center gap-4">
+      <a href="/" class="text-white flex items-center">
+        <img src="/images/tradingfourslogo.svg" alt="Trading Fours Logo" class="h-8 w-auto mr-2" />
+        <span>Trading Fours</span>
+      </a>
+      <p class="bg-[#5e81ac]/50 text-white rounded-full px-2 font-medium leading-6">
+        v{Application.spec(:phoenix, :vsn)}
+      </p>
+    </div>
+    <div class="flex items-center gap-4 font-semibold leading-6 text-white">
+      <a
+        href={"/chat/#{Ecto.UUID.generate()}"}
+        class="rounded-lg bg-[#4c566a] px-2 py-1 hover:bg-[#5e81ac]/80"
+      >
+        Create new room
+      </a>
+    </div>
+  </div>
+</header>
+<main class="p-0">
+  <div class="w-full">
+    <.flash_group flash={@flash} />
+    {@inner_content}
+  </div>
+</main>

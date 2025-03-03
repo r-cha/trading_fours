@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" class="[scrollbar-gutter:stable]">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="csrf-token" content={get_csrf_token()} />
+    <.live_title default="TradingFours">
+      {assigns[:page_title]}
+    </.live_title>
+    <LiveReact.Reload.vite_assets assets={["/js/app.js", "/css/app.css"]}>
+      <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
+      <script phx-track-static type="module" type="text/javascript" src={~p"/assets/app.js"}>
+      </script>
+    </LiveReact.Reload.vite_assets>
+  </head>
+  <body class="bg-[#2e3440] touch-manipulation" style="overscroll-behavior: none;">
+    {@inner_content}
+  </body>
+</html>

@@ -1,0 +1,70 @@
+<div class="h-[calc(100vh-64px)] flex flex-col touch-manipulation overflow-hidden" id="midi-handler" phx-hook="MidiHandler" style="overscroll-behavior: none;">
+  <%= if @username do %>
+    <div class="flex-none">
+      <div class="flex flex-col md:flex-row">
+        <div class="flex-1">
+          <header class="bg-[#3b4252] border-b border-[#4c566a] p-4">
+            <div class="flex justify-between items-center">
+              <div>
+                <h1 class="text-2xl font-bold text-white">Chat</h1>
+                <p class="text-[#d8dee9]">Welcome, {@username}!</p>
+              </div>
+              <div class="md:hidden">
+                <span class="inline-block w-3 h-3 bg-[#a3be8c] rounded-full mr-1"></span>
+                <span class="text-sm text-[#d8dee9]"><%= Enum.count(@online_users) %> online</span>
+              </div>
+            </div>
+          </header>
+        </div>
+        <div class="w-full md:w-64 bg-[#3b4252] border-l border-[#4c566a] hidden md:block p-4">
+          <h2 class="text-lg font-semibold mb-2 text-white">Online Users</h2>
+          <%= for {username, user_data} <- @online_users do %>
+            <div class="flex items-center space-x-2 mb-1">
+              <div class="w-2 h-2 rounded-full bg-[#a3be8c]"></div>
+              <span style={"color: #{user_data.color}"}>{username}</span>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Messages at the top -->
+    <div class="flex-1 overflow-y-auto px-4 py-2">
+      <div class="flex flex-col space-y-4">
+        <%= for msg <- @messages do %>
+          <div class={if msg.author == @username, do: "flex justify-end", else: "flex justify-start"}>
+            <div class={if msg.author == @username, do: "bg-[#4c566a] px-4 py-3 rounded-lg", else: "bg-[#4c566a] px-4 py-3 rounded-lg"} style="max-width: 75%;">
+              <div class="flex items-center justify-between mb-2">
+                <div class="text-sm font-medium text-white" style={"color: #{msg.color}"}>{msg.author}</div>
+              </div>
+              <.react name="Player" sequence={"#{Jason.encode!(msg.midi_sequence)}"} />
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+    
+    <!-- Piano at the bottom -->
+    <div class="flex-none mt-2">
+      <.react name="Piano" />
+    </div>
+  <% else %>
+    <div class="h-screen flex flex-col items-center justify-center p-4 space-y-4">
+      <h1 class="text-2xl font-bold text-white">Chat</h1>
+      <form phx-submit="set_username" class="flex gap-2">
+        <input
+          type="text"
+          name="username"
+          placeholder="Enter your name..."
+          class="rounded-lg border border-[#4c566a] bg-[#3b4252] text-white px-3 py-2 focus:outline-none focus:border-[#5e81ac]"
+        />
+        <button
+          type="submit"
+          class="bg-[#5e81ac] text-white px-4 py-2 rounded-lg hover:bg-[#81a1c1] transition"
+        >
+          Join Chat
+        </button>
+      </form>
+    </div>
+  <% end %>
+</div>
